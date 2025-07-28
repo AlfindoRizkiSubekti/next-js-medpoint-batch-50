@@ -1,0 +1,201 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1200px;
+  height: 650px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.left, .right {
+  flex: 1;
+  padding: 40px;
+}
+
+.left {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo {
+  width: 100px;
+  margin-bottom: 50px;
+}
+
+.left h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.subtext {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.login-form label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 20px;
+  display: block;
+  color: #1a1a1a;
+}
+
+.input-group {
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.forgot-password {
+  font-size: 12px;
+  color: #333;
+  text-align: right;
+  display: block;
+  margin-bottom: 20px;
+  text-decoration: none;
+}
+
+.login-button {
+  background-color: #6600cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 14px;
+  width: 100%;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.right {
+  background: linear-gradient(135deg, #5A0FC8, #932DE4);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.illustration {
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.text_ilustrator {
+  font-size: 27px;
+  line-height: 1.4;
+  margin-bottom: 50px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.right h2 {
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+/* === Responsive Breakpoints === */
+
+/* Tablet (≤ 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left, .right {
+    padding: 30px 20px;
+    width: 100%;
+  }
+
+  .right {
+    border-radius: 0 0 10px 10px;
+  }
+
+  .logo {
+    margin: 0 auto 30px;
+  }
+
+  .text_ilustrator {
+    font-size: 22px;
+    margin-bottom: 30px;
+  }
+}
+
+/* Mobile (≤ 768px) */
+@media (max-width: 768px) {
+  .container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .left h1 {
+    font-size: 24px;
+  }
+
+  .subtext {
+    font-size: 14px;
+  }
+
+  .login-button {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .text_ilustrator {
+    font-size: 20px;
+  }
+
+  .right h2 {
+    font-size: 20px;
+  }
+}
