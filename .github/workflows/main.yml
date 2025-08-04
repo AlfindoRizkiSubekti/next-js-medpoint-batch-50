@@ -26,9 +26,6 @@ jobs:
       - name: Git Config for Gitea
         run: git config --global url."https://${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/".insteadOf "ssh://gitea.sev-2.com"
 
-      - name: Clone Jekoneng UI
-        run: git clone https://rizkisubekti19:${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/refactory/jekoneng-web-ui.git
-
       - name: Generate .env File
         run: |
           while IFS='=' read -r key value || [ -n "$key" ]; do
@@ -37,15 +34,8 @@ jobs:
             vercel env add "$key" production --force --token=${{ secrets.VERCEL_TOKEN }} < <(echo "$value")
           done < <(echo "${{ secrets.DOTENV }}")
 
-      - name: Set Node Options
-        run: echo "NODE_OPTIONS=--max_old_space_size=4096" >> $GITHUB_ENV
-
       - name: Install Dependencies
         run: yarn install
-
-      - name: Patch React Virtualized (Compatibility Fix)
-        run: |
-          sed -i 's/React.PureComponent/Component/g' node_modules/react-virtualized/dist/es/InfiniteLoader/InfiniteLoader.js || true
 
       - name: Build Project
         run: yarn build
