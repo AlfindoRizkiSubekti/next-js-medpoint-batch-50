@@ -27,7 +27,13 @@ jobs:
 
       - name: Git Config for Gitea
         run: git config --global url."https://${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/".insteadOf "ssh://gitea.sev-2.com"
-
+        
+      - name: Install Dependencies
+        run: yarn install
+      
+      - name: Build Project
+        run: vercel build --target=production --token=${{ secrets.VERCEL_TOKEN }}
+        
       - name: Generate .env File
         run: |
           while IFS='=' read -r key value || [ -n "$key" ]; do
@@ -36,11 +42,7 @@ jobs:
             vercel env add "$key" production --force --token=${{ secrets.VERCEL_TOKEN }} < <(echo "$value")
           done < <(echo "${{ secrets.DOTENV }}")
 
-      - name: Install Dependencies
-        run: yarn install
-
-      - name: Build Project
-        run: yarn build
+    
 
       - name: Deploy to Vercel
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --target=production --token=${{ secrets.VERCEL_TOKEN }}
