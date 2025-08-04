@@ -2,9 +2,10 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [main]
-  tags:
-      - 'v*'
+    branches:
+      - main
+    tags:
+      - '*'
 jobs:
   deploy-production:
     runs-on: ubuntu-latest
