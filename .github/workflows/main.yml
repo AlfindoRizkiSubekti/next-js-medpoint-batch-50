@@ -1,0 +1,71 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Vercel Pull (prod)
+        run: vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Set Git Config for Gitea Access
+        run: git config --global url."https://${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/".insteadOf "ssh://gitea.sev-2.com"
+
+      - name: Clone Jekoneng UI
+        run: git clone https://rizkisubekti19:${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/refactory/jekoneng-web-ui.git
+
+      - name: Show Git Config
+        run: git config --get-regexp url
+
+      - name: Generate .env File
+        run: |
+          while IFS='=' read -r key value || [ -n "$key" ]; do
+            [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+            printf "%s=%s\n" "$key" "$value" >> .env
+            vercel env add "$key" production --force --token=${{ secrets.VERCEL_TOKEN }} < <(echo "$value")
+          done < <(echo "${{ secrets.DOTENV }}")
+
+      - name: Clean Node Modules
+        run: rm -rf node_modules
+
+      - name: Cache Yarn Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-v3
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+
+      - name: Install React Virtualized Types
+        run: yarn add --dev @types/react-virtualized@latest
+
+      - name: Check Dependency Versions
+        run: yarn list react react-dom @types/react react-virtualized @types/react-virtualized
+
+      - name: Build Project
+        run: yarn build
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
