@@ -1,0 +1,39 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel Env (prod)
+        run: vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Git Config for Gitea
+        run: git config --global url."https://${{ secrets.GITEA_TOKEN }}@gitea.sev-2.com/".insteadOf "ssh://gitea.sev-2.com"
+        
+      - name: Install Dependencies
+        run: yarn install
+      
+      - name: Build Project
+        run: vercel build --target=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Generate .env File
+        run: |
+          while IFS='=' read -r key value || [ -n "$key" ]; do
+            [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+            printf "%s=%s\n" "$key" "$value" >> .env
+            vercel env add "$key" production --force --token=${{ secrets.VERCEL_TOKEN }} < <(echo "$value")
+          done < <(echo "${{ secrets.DOTENV }}")
+          
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --target=production --token=${{ secrets.VERCEL_TOKEN }}
