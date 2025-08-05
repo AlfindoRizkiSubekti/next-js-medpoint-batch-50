@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 jobs:
   deploy-production:
     runs-on: ubuntu-latest
